@@ -1,0 +1,93 @@
+
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map-canvas { height: 80% }
+    </style>
+	
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKw77gLXgW8xzJ9VvUG6N_iBcdNdC0NGk&sensor=false">
+    </script>
+	<script type="text/javascript"
+	  src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=false">
+	</script>
+    <script type="text/javascript">
+      function initialize() {
+			 initLibrary();
+			 MakeMap();	
+      }
+	var xmlDoc;
+    	var xmlloaded = false;
+	var Xcoord;
+	var Ycoord;
+	var accuracy;
+    function initLibrary()
+    {
+		Xcoord=new Array();
+		Ycoord=new Array();
+		accuracy=new Array();
+
+		
+    }
+
+   
+	function MakeMap()
+	{
+	/* Data points defined as an array of LatLng objects */
+			var heatmapData = new Array();
+			xStart={{locations.0.x}}
+			yStart={{locations.0.y}}
+			{% for location in locations %}
+				  heatmapData[{{forloop.counter0}}]=new google.maps.LatLng({{ location.x }},{{location.y}})
+				  accuracy[{{forloop.counter0}}]={{location.accuracy}}
+
+			{% endfor %}
+			var krakow = new google.maps.LatLng(xStart,yStart);
+			var map = new google.maps.Map(document.getElementById('map-canvas'), {
+			  center: krakow,
+			  zoom: 18,
+			  mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+			
+			//alert(obiektSelect.selectedIndex); //wypisze numer wybranego indeksu
+			for(var i=0;i<Object.keys(heatmapData).length;i++)
+			{
+				if(accuracy[i]*1<100)
+				{
+					//heatmapData[i]= new google.maps.LatLng(Xcoord[i], Ycoord[i]);
+					var draw_circle = new google.maps.Circle({
+						center: heatmapData[i],
+						radius: accuracy[i]*1,
+						strokeColor: "#FF0000",
+						strokeOpacity: 0.05,
+						strokeWeight: 2,
+						fillColor: "#FF0000",
+						fillOpacity: 0.05,
+						//map: map
+					});
+					draw_circle.setMap(map);
+				}
+			}
+			 
+	}
+	/*
+		<form name="form1" action="wizualizacja.php" method="GET">
+		<div>
+		<select name="zrodlo" size="1">
+		<option>NetworkLocation</option>
+		<option>GPS</option>
+		</div>
+		</form>
+	*/
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas" >
+   </div>
+	
+  </body>
+</html>

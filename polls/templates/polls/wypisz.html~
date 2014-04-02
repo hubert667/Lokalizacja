@@ -1,0 +1,15 @@
+<html>
+  <head>
+   
+  </head>
+  <body>
+	{{locations.0.x}}
+    {% for location in locations %}
+	
+	  <p>{{ location.x }} and {{location.y}} </p>
+	
+	
+    {% endfor %}
+	
+  </body>
+</html>
