@@ -24,3 +24,15 @@ class Lokalizacja(models.Model):
     class Meta:
         managed = False
         db_table = 'lokalizacja'
+        
+class Clusters(models.Model):
+    id = models.IntegerField(db_column='Id', primary_key=True) # Field name made lowercase.
+    x = models.CharField(max_length=20, blank=True)
+    y = models.CharField(max_length=20, blank=True)
+    user = models.IntegerField()
+    ts = models.CharField(max_length=20)
+    def __unicode__(self):  # Python 3: def __str__(self):
+        return self.x
+    class Meta:
+        managed = False
+        db_table = 'clusters'

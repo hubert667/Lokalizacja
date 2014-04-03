@@ -9,4 +9,6 @@ urlpatterns = patterns('',
     url(r'^(?P<poll_id>\d+)/$', views.wypisz, name='detail'),
     # ex: /polls/5/map/
     url(r'^(?P<poll_id>\d+)/map/$', views.draw, name='map'),
+     # ex: /polls/5/map/
+    url(r'centers/$', views.drawCenters, name='mapCenter'),
 )
