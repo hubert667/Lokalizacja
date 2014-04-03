@@ -10,5 +10,10 @@ urlpatterns = patterns('',
     # ex: /polls/5/map/
     url(r'^(?P<poll_id>\d+)/map/$', views.draw, name='map'),
      # ex: /polls/5/map/
-    url(r'centers/$', views.drawCenters, name='mapCenter'),
+    url(r'^(?P<user_id>\d+)/centers/$', views.drawCenters, name='mapCenter'),
+    # ex: /polls/5/map/
+    url(r'^users/$', views.userChoice, name='userChoice'),
+    
+    url(r'^drawUser/$', views.drawUser, name='drawUser'),
+    
 )
