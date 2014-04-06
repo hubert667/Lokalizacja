@@ -1,0 +1,19 @@
+<html>
+  <head>
+   
+  </head>
+  <body>
+	
+   <h1>Choose user</h1>
+
+	{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+	<form action="{% url 'polls:drawUser' %}" method="post">
+	{% csrf_token %}
+	{% for user in users %}
+	    <input type="radio" name="user" id="choice{{ forloop.counter }}" value="{{ user }}" />
+	    <label for="choice{{ forloop.counter }}">{{ user }}</label><br />
+	{% endfor %}
+	<input type="submit" value="Vote" />
+	</form>
+  </body>
+</html>

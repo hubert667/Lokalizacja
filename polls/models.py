@@ -27,9 +27,43 @@ class Lokalizacja(models.Model):
 class Clusters(models.Model):
     x = models.CharField(max_length=20, blank=True)
     y = models.CharField(max_length=20, blank=True)
-    user = models.IntegerField()
+    user = models.CharField(max_length=255, blank=True)
     ts = models.CharField(max_length=20)
     def __unicode__(self):  # Python 3: def __str__(self):
         return self.x
     class Meta:
         db_table = 'clusters'
+        
+class Users(models.Model):
+    device_id = models.CharField(max_length=255, blank=True)
+    def __unicode__(self):  # Python 3: def __str__(self):
+        return self.device_id
+    class Meta:
+        db_table = 'Users'
+        
+class Locations(models.Model):
+    field_id = models.IntegerField(db_column='_id', primary_key=True) # Field renamed because it started with '_'.
+    timestamp = models.FloatField(blank=True, null=True)
+    device_id = models.CharField(max_length=255, blank=True)
+    double_latitude = models.FloatField(blank=True, null=True)
+    double_longitude = models.FloatField(blank=True, null=True)
+    double_bearing = models.FloatField(blank=True, null=True)
+    double_speed = models.FloatField(blank=True, null=True)
+    double_altitude = models.FloatField(blank=True, null=True)
+    provider = models.TextField(blank=True)
+    accuracy = models.FloatField(blank=True, null=True)
+    label = models.TextField(blank=True)
+    class Meta:
+        db_table = 'locations'
+
+
+class PluginGoogleActivityRecognition(models.Model):
+    field_id = models.IntegerField(db_column='_id', primary_key=True) # Field renamed because it started with '_'.
+    timestamp = models.FloatField(blank=True, null=True)
+    device_id = models.CharField(max_length=255, blank=True)
+    activity_name = models.TextField(blank=True)
+    activity_type = models.IntegerField(blank=True, null=True)
+    confidence = models.IntegerField(blank=True, null=True)
+    activities = models.TextField(blank=True)
+    class Meta:
+        db_table = 'plugin_google_activity_recognition'
