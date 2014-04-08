@@ -6,7 +6,7 @@
 	
     {% for activity in locations %}
 	
-	  <p>{{ activity.timestamp}} {{ activity.activity_name }} with {{activity.confidence}}% </p>
+	  <p>{{forloop.counter0}} {{ activity.timestamp}} {{ activity.activity_name }} with {{activity.confidence}}% </p>
 	
 	
     {% endfor %}

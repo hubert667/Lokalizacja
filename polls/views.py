@@ -11,8 +11,6 @@ def index(request):
     return HttpResponse("Hello, world. You're at the poll index.")
 
 def printActivities(request,user_id,time_start,time_end):
-    print time_start
-    print type(time_start)
     activity_list = PluginGoogleActivityRecognition.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
     activity_times=[]
     for activity in activity_list:
@@ -76,7 +74,6 @@ def detailsForm(request):
             activities=form.cleaned_data['ShowActivities']
             dateStart=1000*calendar.timegm(form.cleaned_data['start_time'].utctimetuple())
             dateEnd=1000*calendar.timegm(form.cleaned_data['end_time'].utctimetuple())
-            print dateEnd
             if activities:
                 return printActivities(request,user_id,dateStart,dateEnd)
             else:
