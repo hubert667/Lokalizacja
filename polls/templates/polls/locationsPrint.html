@@ -1,0 +1,15 @@
+<html>
+  <head>
+   
+  </head>
+  <body>
+	
+    {% for activity in locations %}
+	
+	  <p>{{forloop.counter0}} {{ activity.timestamp}} {{ activity.activity_name }} with {{activity.confidence}}% </p>
+	
+	
+    {% endfor %}
+	
+  </body>
+</html>

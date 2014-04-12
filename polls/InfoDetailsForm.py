@@ -7,8 +7,12 @@ class InfoDetailsForm(forms.Form):
 
    users=choices=Locations.objects.values_list('device_id', flat=True).distinct()
    ChooseUser=forms.ModelChoiceField(queryset=users,label='Choose user')
-   ShowClusters = forms.BooleanField(required=False)
-   ShowActivities=forms.BooleanField(required=False)
+   CHOICES=[('locations','Show location on map'),('clusters','show clusters on map'),
+         ('activity','show activity list'),('locationList','show location list')]
+   ChooseTask= forms.ChoiceField(choices=CHOICES, initial={'Show location on map':'location'}, widget=forms.RadioSelect())
+   #ShowClustersOnMap = forms.BooleanField(required=False)
+   #ShowActivitiesList=forms.BooleanField(required=False)
+   #ShowLocationsList=forms.BooleanField(required=False)
    start_time=forms.DateTimeField(initial=date.today()-timedelta(days=7))
    end_time=forms.DateTimeField(initial=date.today)
    

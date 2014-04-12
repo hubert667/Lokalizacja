@@ -2,6 +2,7 @@ from polls.models import *
 from Scripts import kmeans
 import time
 
+#only for data from SDCF
 def ClusterData(user_id):
     
     locations_list = Lokalizacja.objects.filter(user=user_id)
@@ -16,7 +17,7 @@ def ClusterData(user_id):
         
 def ClusterDataAware(user_id):
     
-    locations_list = Locations.objects.filter(device_id=user_id)
+    locations_list = Locations.objects.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
     location_data=[]
     for loc in locations_list:
         location_data.append([float(loc.double_latitude),float(loc.double_longitude)])
