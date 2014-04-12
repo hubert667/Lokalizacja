@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 Part of the code cames from the Data Science Blog
 http://datasciencelab.wordpress.com/2014/01/21/selection-of-k-in-k-means-clustering-reloaded/
 """
-def ClusterKMeans(dataToCluster):
+def FindKAndClusterKMeans(dataToCluster):
 
     results=[]
     fs, Sk = findK(1,dataToCluster)

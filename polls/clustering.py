@@ -9,21 +9,39 @@ def ClusterData(user_id):
     location_data=[]
     for loc in locations_list:
         location_data.append([float(loc.x),float(loc.y)])
-    clusters_centers=kmeans.ClusterKMeans(location_data)
-    previous_clusters=Clusters.objects.filter(user=user_id).delete()
-    for cluster in clusters_centers:
-        p = Clusters(x=str(cluster[0]), y=str(cluster[1]),user=user_id,ts=time.time())
-        p.save()
+    doClusters(user_id, location_data)
         
-def ClusterDataAware(user_id):
+
+def ClusterDataAware(user_id,time_start,time_end):
+    """
+    Clusters data after it find optimal K
+    """
     
-    locations_list = Locations.objects.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
+    locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
     location_data=[]
     for loc in locations_list:
         location_data.append([float(loc.double_latitude),float(loc.double_longitude)])
-    clusters_centers=kmeans.ClusterKMeans(location_data)
-    previous_clusters=Clusters.objects.filter(user=user_id).delete()
+    
+    doClusters(user_id, location_data)
+        
+def SmartClusterData(user_id,time_start,time_end):
+    """
+    Cluster localization data using additional techniques for improving performace
+    """
+    locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
+    location_data=[]
+    for loc in locations_list:
+        location_data.append([float(loc.double_latitude),float(loc.double_longitude)])
+    
+    doClusters(user_id, location_data)
+    
+def doClusters(user_id, location_data):
+    clusters_centers = kmeans.FindKAndClusterKMeans(location_data)
+    Clusters.objects.filter(user=user_id).delete()
     for cluster in clusters_centers:
-        p = Clusters(x=str(cluster[0]), y=str(cluster[1]),user=user_id,ts=time.time())
+        p = Clusters(x=str(cluster[0]), y=str(cluster[1]), user=user_id, ts=time.time())
         p.save()
+    
+    
+    
     
