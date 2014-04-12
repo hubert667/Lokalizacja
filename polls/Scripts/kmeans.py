@@ -14,7 +14,6 @@ def FindKAndClusterKMeans(dataToCluster):
     for i in range(2,19):
         fs, Sk = findK(i,dataToCluster,Sk)
         results.append(fs)
-    print results
     res_clusters=choose_clusters(results,dataToCluster)
     k_means=KMeans(n_clusters=res_clusters, init='k-means++', n_init=10, max_iter=300, tol=0.0001, precompute_distances=True, verbose=0, random_state=None, copy_x=True, n_jobs=1)
     k_means.fit(dataToCluster)
@@ -30,11 +29,11 @@ def findK( local_K, dataToCluster,Skm1=0):
         k_means.fit(dataToCluster)
         mu=k_means.cluster_centers_
         clusters=find_groups(k_means,dataToCluster,local_K)
-        sum=0   
+        local_sum=0   
         for i in range(local_K):
             for c in clusters[i]:
-                sum+=np.linalg.norm(mu[i]-c)**2
-        Sk=sum
+                local_sum+=np.linalg.norm(mu[i]-c)**2
+        Sk=local_sum
         """
         Sk = sum([np.linalg.norm(mu[i]-c)**2 \
                  for i in range(local_K) for c in clusters[i]])

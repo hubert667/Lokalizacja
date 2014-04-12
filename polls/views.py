@@ -39,8 +39,11 @@ def draw(request,poll_id):
     context = {'locations': latest_poll_list}
     return render(request, 'polls/wizualizacja.html', context)
 
-def drawAware(request,user_id,time_start,time_end):
-    latest_poll_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
+def drawAware(request,user_id,time_start,time_end,static=False):
+    if static:
+        latest_poll_list=GetStaticLocations(user_id, time_start, time_end)
+    else:
+        latest_poll_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
     context = {'locations': latest_poll_list}
     return render(request, 'polls/locationsMap.html', context)
 
@@ -51,7 +54,8 @@ def drawCenters(request,user_id):
     return render(request, 'polls/clustersDraw.html', context)
 
 def drawCentersAware(request,user_id,time_start,time_end):
-    ClusterDataAware(user_id,time_start,time_end)
+    #ClusterDataAware(user_id,time_start,time_end)
+    SmartClusterData(user_id,time_start,time_end)
     latest_poll_list = Clusters.objects.filter(user=user_id)
     context = {'locations': latest_poll_list}
     return render(request, 'polls/clustersDraw.html', context)
@@ -90,6 +94,8 @@ def detailsForm(request):
             print choose
             if choose=="locations":
                 return drawAware(request,user_id,dateStart,dateEnd)
+            elif choose=="locationStatic":
+                return drawAware(request,user_id,dateStart,dateEnd,static=True)
             elif choose=="clusters":
                 return drawCentersAware(request,user_id,dateStart,dateEnd)
             elif choose=="activity":  
