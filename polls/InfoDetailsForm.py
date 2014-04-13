@@ -12,7 +12,7 @@ class InfoDetailsForm(forms.Form):
     #ShowClustersOnMap = forms.BooleanField(required=False)
     #ShowActivitiesList=forms.BooleanField(required=False)
     #ShowLocationsList=forms.BooleanField(required=False)
-    start_time=forms.DateTimeField(initial=date.today()-timedelta(days=7))
+    start_time=forms.DateTimeField(initial=date.today()-timedelta(days=14))
     end_time=forms.DateTimeField(initial=date.today)
    
     def __init__(self, *args, **kwargs):
