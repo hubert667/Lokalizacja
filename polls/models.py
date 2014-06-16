@@ -11,6 +11,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+#Obosolete: only foor SDCF 
 class Lokalizacja(models.Model):
     id = models.IntegerField(db_column='Id', primary_key=True) # Field name made lowercase.
     x = models.CharField(max_length=20, blank=True)
@@ -27,6 +28,7 @@ class Lokalizacja(models.Model):
 class Clusters(models.Model):
     x = models.CharField(max_length=20, blank=True)
     y = models.CharField(max_length=20, blank=True)
+    name=models.CharField(max_length=255, blank=True)
     user = models.CharField(max_length=255, blank=True)
     ts = models.CharField(max_length=20)
     def __unicode__(self):  # Python 3: def __str__(self):
@@ -40,7 +42,8 @@ class Users(models.Model):
         return self.device_id
     class Meta:
         db_table = 'Users'
-        
+       
+
 class Locations(models.Model):
     field_id = models.IntegerField(db_column='_id', primary_key=True) # Field renamed because it started with '_'.
     timestamp = models.FloatField(blank=True, null=True)

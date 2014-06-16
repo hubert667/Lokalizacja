@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from clustering import *
+from places import *
 from InfoDetailsForm import *
 import calendar
 import datetime
