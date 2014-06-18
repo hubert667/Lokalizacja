@@ -26,8 +26,8 @@ class Lokalizacja(models.Model):
         db_table = 'lokalizacja'
         
 class Clusters(models.Model):
-    x = models.CharField(max_length=20, blank=True)
-    y = models.CharField(max_length=20, blank=True)
+    double_latitude = models.CharField(max_length=20, blank=True)
+    double_longitude = models.CharField(max_length=20, blank=True)
     name=models.CharField(max_length=255, blank=True)
     user = models.CharField(max_length=255, blank=True)
     ts = models.CharField(max_length=20)

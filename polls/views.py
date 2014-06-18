@@ -24,16 +24,19 @@ def printActivities(request,user_id,time_start,time_end):
     return render(request, 'polls/activityPrint.html', context)
 
 def printLocations(request,user_id,time_start,time_end):
-    locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
-    locations_times=[]
+    
+    period_for_place=60 #in minutes
+    places_base=placesMap(user_id,period_for_place)
+    places_base.doMapping()
+    places_map=places_base.places_map
+    #locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
+    places_map_local={}
     time_change = timedelta(hours=2)
-    max_pause=timedelta(minutes=10)
-    for location in locations_list:
-        new_location=location
-        new_location.timestamp= datetime.datetime.fromtimestamp(location.timestamp / 1e3)+time_change
-        locations_times.append(new_location)
-    context = {'locations': locations_times}
-    return render(request, 'polls/locationsPrint.html', context)
+    for timestamp in places_map:
+        new_time= datetime.datetime.fromtimestamp(timestamp*places_base.time_period / 1e3)+time_change
+        places_map_local[new_time]=places_map[timestamp];
+    context = {'placesMap': places_map_local}
+    return render(request, 'polls/placesPrint.html', context)
 
 
 def draw(request,poll_id):

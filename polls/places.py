@@ -2,7 +2,7 @@ from polls.models import *
 from Scripts import kmeans
 import time
 import datetime
-import collections.Counter
+import collections
 from datetime import timedelta
 from math import cos, sin, asin, sqrt, radians
 
@@ -11,7 +11,7 @@ class placesMap:
     
     user_id=0;
     time_period=0;
-    places_map=collections.Counter()
+    places_map={}
     present_sample=collections.Counter()
     max_distance=50
     
@@ -24,7 +24,7 @@ class placesMap:
     
     def doMapping(self):
     
-        locations_list = Lokalizacja.objects.filter(user=self.user_id)
+        locations_list = Locations.objects.filter(device_id=self.user_id)
 #         location_data=[]
 #         for loc in locations_list:
 #             location_data.append([float(loc.x),float(loc.y),loc.ts])
@@ -41,12 +41,12 @@ class placesMap:
             places_counts[place]=collections.Counter()
             
         for loc in location_data:
-            closest_place=self.ind_closest(loc,places)
-            time=loc.ts/self.time_period
+            closest_place=self.find_closest(loc,places)
+            time=loc.timestamp/self.time_period
             self.present_sample[time]+=1
             if closest_place is not None:
                 places_counts[closest_place][time]+=1
-        for key,val in self.present_sample:
+        for time in self.present_sample:
             max=0
             chosen_place=None
             for place in places:
@@ -54,7 +54,7 @@ class placesMap:
                 if res>max:
                     max=res
                     chosen_place=place
-            self.places_map[key]=chosen_place  
+            self.places_map[time]=chosen_place  
                     
         
         
@@ -84,7 +84,7 @@ class placesMap:
         This method is copied from http://gis.stackexchange.com/
         """
         # convert decimal degrees to radians
-        lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+        lon1, lat1, lon2, lat2 = map(radians, [float(lon1), float(lat1), float(lon2), float(lat2)])
         # haversine formula
         dlon = lon2 - lon1
         dlat = lat2 - lat1

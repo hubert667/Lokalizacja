@@ -55,7 +55,7 @@ def doClusters(user_id, location_data):
     current_time=time.time()
     name=1;
     for cluster in clusters_centers:
-        p = Clusters(x=str(cluster[0]), y=str(cluster[1]), user=user_id, ts=current_time,str(name))
+        p = Clusters(double_latitude=str(cluster[0]), double_longitude=str(cluster[1]), user=user_id, ts=current_time,name=str(name))
         name+=1
         p.save()
     
