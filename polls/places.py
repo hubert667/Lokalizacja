@@ -20,14 +20,11 @@ class placesMap:
         period- period in minutes
         """
         self.user_id=user_id
-        self.time_period=period*60*1000
+        self.time_period=period*60*1e+3
     
-    def doMapping(self):
+    def doMapping(self,time_start,time_end):
     
-        locations_list = Locations.objects.filter(device_id=self.user_id)
-#         location_data=[]
-#         for loc in locations_list:
-#             location_data.append([float(loc.x),float(loc.y),loc.ts])
+        locations_list = Locations.objects.filter(device_id=self.user_id,timestamp__gte=time_start,timestamp__lte=time_end)
         self.mapToSamples(locations_list)
         
     def mapToSamples(self,location_data):
@@ -42,7 +39,7 @@ class placesMap:
             
         for loc in location_data:
             closest_place=self.find_closest(loc,places)
-            time=loc.timestamp/self.time_period
+            time=int(loc.timestamp/self.time_period)
             self.present_sample[time]+=1
             if closest_place is not None:
                 places_counts[closest_place][time]+=1
@@ -60,7 +57,7 @@ class placesMap:
         
     def find_closest(self,location,places):
         """
-        returns null if no place is the distance of max_distance
+        returns None if no place is the distance of max_distance
         """
         
         closest=None

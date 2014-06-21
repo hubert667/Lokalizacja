@@ -21,7 +21,7 @@ class Lokalizacja(models.Model):
     metoda = models.CharField(max_length=20, blank=True)
     ts = models.CharField(max_length=20)
     def __unicode__(self):  # Python 3: def __str__(self):
-        return self.x
+        return str(self.x)
     class Meta:
         db_table = 'lokalizacja'
         
@@ -32,7 +32,7 @@ class Clusters(models.Model):
     user = models.CharField(max_length=255, blank=True)
     ts = models.CharField(max_length=20)
     def __unicode__(self):  # Python 3: def __str__(self):
-        return self.x
+        return str(self.double_latitude)+" "+str(self.double_longitude)
     class Meta:
         db_table = 'clusters'
         
