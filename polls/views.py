@@ -2,8 +2,8 @@ from polls.models import *
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
-from clustering import *
-from places import *
+import clustering
+import places
 from InfoDetailsForm import *
 import calendar
 import datetime
@@ -38,61 +38,38 @@ def printActivities(request,user_id,time_start,time_end):
 
 def printLocations(request,user_id,time_start,time_end):
      
-    period_for_place=60 #in minutes
-    places_base=placesMap(user_id,period_for_place)
-    places_base.doMapping(time_start,time_end)
-    places_map=places_base.places_map
-    #locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
-    places_map_local={}
-    time_change = timedelta(hours=2)
-    for timestamp in places_map:
-        new_time= datetime.datetime.fromtimestamp(timestamp*places_base.time_period / 1e3)+time_change
-        places_map_local[new_time]=places_map[timestamp];
-    sorted_dict = sorted(places_map_local.iteritems(), key=operator.itemgetter(0))
-    context = {'placesMap': sorted_dict}
+    places_base=places.placesMap(user_id)
+    places_list=places_base.GetUserPlaces(time_start, time_end)
+    context = {'placesMap': places_list}
     return render(request, 'polls/placesPrint.html', context)
 
 
-def draw(request,poll_id):
-    latest_poll_list = Lokalizacja.objects.all()[:poll_id]
-    context = {'locations': latest_poll_list}
-    return render(request, 'polls/wizualizacja.html', context)
 
 def drawAware(request,user_id,time_start,time_end,static=False):
     if static:
-        latest_poll_list=GetStaticLocations(user_id, time_start, time_end)
+        latest_poll_list=clustering.GetStaticLocations(user_id, time_start, time_end)
     else:
         latest_poll_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
     context = {'locations': latest_poll_list}
     return render(request, 'polls/locationsMap.html', context)
 
-def drawCenters(request,user_id):
-    ClusterData(user_id)
-    latest_poll_list = Clusters.objects.filter(user=user_id)
-    context = {'locations': latest_poll_list}
-    return render(request, 'polls/clustersDraw.html', context)
+
 
 def drawCentersAware(request,user_id,time_start,time_end):
-    #ClusterDataAware(user_id,time_start,time_end)
-    SmartClusterData(user_id,time_start,time_end)
-    latest_poll_list = Clusters.objects.filter(user=user_id)
+   
+    latest_poll_list = Clusters.objects.filter(device_id=user_id)
     context = {'locations': latest_poll_list}
     return render(request, 'polls/clustersDraw.html', context)
-"""
-def userChoice(request):
-    users=[6,7]
-    context = {'users': users}
-    return render(request, 'polls/userChoice.html', context)
 
-def drawUser(request):
-    selected_choice = request.POST['choice']
-    selected_choice=int(selected_choice)
-    # Always return an HttpResponseRedirect after successfully dealing
-    # with POST data. This prevents data from being posted twice if a
-    # user hits the Back button.
-    return drawCenters(request,selected_choice)
-    #return HttpResponseRedirect(reverse('polls:users'))
-"""
+def clusterData(user_id,time_start,time_end):
+    #clustering.ClusterDataAware(user_id,time_start,time_end)
+    clustering.SmartClusterData(user_id,time_start,time_end)
+    
+def placesToUser(user_id):
+
+    places_base=places.placesMap(user_id)
+    places_base.doMapping(None,None)   
+
     
 def detailsForm(request):
    
@@ -116,6 +93,8 @@ def detailsForm(request):
             elif choose=="locationStatic":
                 return drawAware(request,user_id,dateStart,dateEnd,static=True)
             elif choose=="clusters":
+                clusterData(user_id,dateStart,dateEnd)
+                placesToUser(user_id)
                 return drawCentersAware(request,user_id,dateStart,dateEnd)
             elif choose=="activity":  
                 return printActivities(request,user_id,dateStart,dateEnd)

@@ -25,19 +25,21 @@ class Lokalizacja(models.Model):
     class Meta:
         db_table = 'lokalizacja'
         
+        
 class Clusters(models.Model):
     double_latitude = models.CharField(max_length=20, blank=True)
     double_longitude = models.CharField(max_length=20, blank=True)
     name=models.CharField(max_length=255, blank=True)
-    user = models.CharField(max_length=255, blank=True)
+    device_id = models.CharField(max_length=255, blank=True)
     ts = models.CharField(max_length=20)
     def __unicode__(self):  # Python 3: def __str__(self):
-        return str(self.double_latitude)+" "+str(self.double_longitude)
+        return str(self.name)+ str(self.double_latitude)+" "+str(self.double_longitude)
     class Meta:
         db_table = 'clusters'
         
 class Users(models.Model):
-    device_id = models.CharField(max_length=255, blank=True)
+    device_id = models.CharField(max_length=255, primary_key=True)
+    user_info=models.CharField(max_length=255,blank=True) #additional field, not used
     def __unicode__(self):  # Python 3: def __str__(self):
         return self.device_id
     class Meta:
@@ -59,6 +61,11 @@ class Locations(models.Model):
     class Meta:
         db_table = 'locations'
 
+class Places(models.Model):
+    device_id = models.CharField(max_length=255, blank=True)
+    timestamp = models.FloatField()
+    place=models.ForeignKey(Clusters)
+    
 
 class PluginGoogleActivityRecognition(models.Model):
     field_id = models.IntegerField(db_column='_id', primary_key=True) # Field renamed because it started with '_'.
