@@ -33,10 +33,10 @@
 	{
 	/* Data points defined as an array of LatLng objects */
 			var heatmapData = new Array();
-			xStart={{locations.0.x}}
-			yStart={{locations.0.y}}
+			xStart={{locations.0.double_latitude}}
+			yStart={{locations.0.double_longitude}}
 			{% for location in locations %}
-				  heatmapData[{{forloop.counter0}}]=new google.maps.LatLng({{ location.x }},{{location.y}})
+				  heatmapData[{{forloop.counter0}}]=new google.maps.LatLng({{ location.double_latitude }},{{location.double_longitude}})
 			{% endfor %}
 			var krakow = new google.maps.LatLng(xStart,yStart);
 			var map = new google.maps.Map(document.getElementById('map-canvas'), {

@@ -39,7 +39,7 @@ class placesMap:
         maps samples to places
         """
         
-        places=Clusters.objects.filter(user=self.user_id)
+        places=Clusters.objects.filter(device_id=self.user_id)
         places_counts={}
         for place in places:
             places_counts[place]=collections.Counter()
@@ -99,20 +99,14 @@ class placesMap:
         
             
     def __saveToDatabase(self):
-        period_for_place=60 #in minutes
+ 
         
         #locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
-        places_map_local={}
-        time_change = timedelta(hours=2)
         for timestamp in self.places_map:
             new_timestamp=timestamp*self.time_period
-            place=Places(timestamp=new_timestamp,user=self.user_id,place=self.places_map[timestamp])
-            new_time= datetime.datetime.fromtimestamp(timestamp*self.time_period / 1e3)+time_change
-            places_map_local[new_time]=self.places_map[timestamp];
-        sorted_dict = sorted(places_map_local.iteritems(), key=operator.itemgetter(0))
-        context = {'placesMap': sorted_dict}
-    
-    
+            place=Places(timestamp=new_timestamp,device_id=self.user_id,place=self.places_map[timestamp])
+            place.save()
+
     def GetUserPlaces(self,time_start,time_end):
         
         if time_start!=None and time_end!=None:
@@ -124,8 +118,8 @@ class placesMap:
         places_local=[]
         time_change = timedelta(hours=2)
         for place in places:
-            new_timestamp=place.timestamp*self.time_period
-            place=place.Places
+            new_timestamp=place.timestamp
+            place=place.place
             new_time= datetime.datetime.fromtimestamp(new_timestamp / 1e3)+time_change
             places_local.append([new_time,place])
         return places_local

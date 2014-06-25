@@ -53,7 +53,7 @@ def GetStaticLocations(user_id, time_start, time_end):
     
 def __doClusters(user_id, location_data):
     clusters_centers = kmeans.FindKAndClusterKMeans(location_data)
-    Clusters.objects.filter(user=user_id).delete()
+    Clusters.objects.filter(device_id=user_id).delete()
     current_time=time.time()
     name=1;
     for cluster in clusters_centers:

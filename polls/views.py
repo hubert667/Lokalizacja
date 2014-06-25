@@ -56,19 +56,21 @@ def drawAware(request,user_id,time_start,time_end,static=False):
 
 
 def drawCentersAware(request,user_id,time_start,time_end):
-   
+    clusterData(user_id,time_start,time_end)
+    placesToUser(user_id,time_start,time_end)
     latest_poll_list = Clusters.objects.filter(device_id=user_id)
     context = {'locations': latest_poll_list}
+    #print latest_poll_list
     return render(request, 'polls/clustersDraw.html', context)
 
 def clusterData(user_id,time_start,time_end):
     #clustering.ClusterDataAware(user_id,time_start,time_end)
     clustering.SmartClusterData(user_id,time_start,time_end)
     
-def placesToUser(user_id):
+def placesToUser(user_id,time_start,time_end):
 
     places_base=places.placesMap(user_id)
-    places_base.doMapping(None,None)   
+    places_base.doMapping(time_start,time_end)   
 
     
 def detailsForm(request):
@@ -93,8 +95,6 @@ def detailsForm(request):
             elif choose=="locationStatic":
                 return drawAware(request,user_id,dateStart,dateEnd,static=True)
             elif choose=="clusters":
-                clusterData(user_id,dateStart,dateEnd)
-                placesToUser(user_id)
                 return drawCentersAware(request,user_id,dateStart,dateEnd)
             elif choose=="activity":  
                 return printActivities(request,user_id,dateStart,dateEnd)

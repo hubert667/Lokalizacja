@@ -33,7 +33,7 @@ class Clusters(models.Model):
     device_id = models.CharField(max_length=255, blank=True)
     ts = models.CharField(max_length=20)
     def __unicode__(self):  # Python 3: def __str__(self):
-        return str(self.name)+ str(self.double_latitude)+" "+str(self.double_longitude)
+        return "place number: " + str(self.name)+ "  (" + str(self.double_latitude)+" "+str(self.double_longitude)+")"
     class Meta:
         db_table = 'clusters'
         
@@ -43,7 +43,7 @@ class Users(models.Model):
     def __unicode__(self):  # Python 3: def __str__(self):
         return self.device_id
     class Meta:
-        db_table = 'Users'
+        db_table = 'users'
        
 
 class Locations(models.Model):
@@ -64,7 +64,9 @@ class Locations(models.Model):
 class Places(models.Model):
     device_id = models.CharField(max_length=255, blank=True)
     timestamp = models.FloatField()
-    place=models.ForeignKey(Clusters)
+    place=models.ForeignKey(Clusters,null=True,blank=True)
+    class Meta:
+        db_table = 'places'
     
 
 class PluginGoogleActivityRecognition(models.Model):
