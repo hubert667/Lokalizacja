@@ -7,7 +7,7 @@ class InfoDetailsForm(forms.Form):
 
     ChooseUser=forms.ModelChoiceField(queryset=[],label='Choose user')
     CHOICES=[('locations','Show location on map'),('locationStatic','Show only static locations on map'),('clusters','show clusters on map'),
-         ('activity','show activity list'),('locationList','show location list')]
+         ('activity','show activity list'),('locationList','show location list'),('trainPredictor','train the software for predictions')]
     ChooseTask= forms.ChoiceField(choices=CHOICES, initial='locations', widget=forms.RadioSelect())
     #ShowClustersOnMap = forms.BooleanField(required=False)
     #ShowActivitiesList=forms.BooleanField(required=False)

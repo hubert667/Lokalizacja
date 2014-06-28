@@ -9,9 +9,12 @@ import calendar
 import datetime
 from datetime import timedelta
 import operator
+import neuralPredictingPlaces
 
 def index(request):
     return HttpResponse("Hello, world. You're at the poll index.")
+
+predictor=None
 
 def printActivities(request,user_id,time_start,time_end):
     activity_list = PluginGoogleActivityRecognition.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
@@ -24,17 +27,6 @@ def printActivities(request,user_id,time_start,time_end):
     context = {'locations': activity_times}
     return render(request, 'polls/activityPrint.html', context)
 
-# def printLocations(request,user_id,time_start,time_end):
-#     locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
-#     locations_times=[]
-#     time_change = timedelta(hours=2)
-#     max_pause=timedelta(minutes=10)
-#     for location in locations_list:
-#         new_location=location
-#         new_location.timestamp= datetime.datetime.fromtimestamp(location.timestamp / 1e3)+time_change
-#         locations_times.append(new_location)
-#     context = {'locations': locations_times}
-#     return render(request, 'polls/locationsPrint.html', context)
 
 def printLocations(request,user_id,time_start,time_end):
      
@@ -43,7 +35,10 @@ def printLocations(request,user_id,time_start,time_end):
     context = {'placesMap': places_list}
     return render(request, 'polls/placesPrint.html', context)
 
-
+def trainPredictor(request,user_id,time_start,time_end):
+    
+    predictor=neuralPredictingPlaces.predictingFramework(user_id)
+    predictor.train(time_start, time_end)
 
 def drawAware(request,user_id,time_start,time_end,static=False):
     if static:
@@ -94,6 +89,8 @@ def detailsForm(request):
                 return drawAware(request,user_id,dateStart,dateEnd)
             elif choose=="locationStatic":
                 return drawAware(request,user_id,dateStart,dateEnd,static=True)
+            elif choose=="trainPredictor":
+                return trainPredictor(request,user_id,dateStart,dateEnd)
             elif choose=="clusters":
                 return drawCentersAware(request,user_id,dateStart,dateEnd)
             elif choose=="activity":  
