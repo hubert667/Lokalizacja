@@ -100,28 +100,33 @@ class placesMap:
             
     def __saveToDatabase(self):
  
-        
+        Places.objects.filter(device_id=self.user_id).delete()
         #locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
         for timestamp in self.places_map:
             new_timestamp=timestamp*self.time_period
             place=Places(timestamp=new_timestamp,device_id=self.user_id,place=self.places_map[timestamp])
             place.save()
 
-    def GetUserPlaces(self,time_start,time_end):
+    def GetUserPlaces(self,time_start,time_end,predictor=None):
         
         if time_start!=None and time_end!=None:
             places=Places.objects.filter(device_id=self.user_id,timestamp__gte=time_start,timestamp__lte=time_end).order_by('timestamp')
         else:
             places=Places.objects.filter(device_id=self.user_id).order_by('timestamp')
-    
+        
+        predictedLocation=None
         #locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
         places_local=[]
         time_change = timedelta(hours=2)
-        for place in places:
-            new_timestamp=place.timestamp
-            place=place.place
-            new_time= datetime.datetime.fromtimestamp(new_timestamp / 1e3)+time_change
-            places_local.append([new_time,place])
+        for locationEvent in places:
+            new_timestamp=locationEvent.timestamp
+            place=locationEvent.place
+            if  place!=None:
+                if predictor!=None:
+                    predictedLocation=predictor.predictLocation(self.user_id,place,new_timestamp)
+                new_time= datetime.datetime.fromtimestamp(new_timestamp / 1e3)+time_change
+                if place.name!=predictedLocation:
+                    places_local.append([new_time,place,predictedLocation])
         return places_local
         
         

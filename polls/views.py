@@ -14,7 +14,8 @@ import neuralPredictingPlaces
 def index(request):
     return HttpResponse("Hello, world. You're at the poll index.")
 
-predictor=None
+predictor=neuralPredictingPlaces.predictingFramework()
+
 
 def printActivities(request,user_id,time_start,time_end):
     activity_list = PluginGoogleActivityRecognition.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
@@ -27,18 +28,36 @@ def printActivities(request,user_id,time_start,time_end):
     context = {'locations': activity_times}
     return render(request, 'polls/activityPrint.html', context)
 
+# def printLocations(request,user_id,time_start,time_end):
+#     locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
+#     locations_times=[]
+#     time_change = timedelta(hours=2)
+#     max_pause=timedelta(minutes=10)
+#     for location in locations_list:
+#         new_location=location
+#         new_location.timestamp= datetime.datetime.fromtimestamp(location.timestamp / 1e3)+time_change
+#         locations_times.append(new_location)
+#     context = {'locations': locations_times}
+#     return render(request, 'polls/locationsPrint.html', context)
 
 def printLocations(request,user_id,time_start,time_end):
-     
+      
     places_base=places.placesMap(user_id)
-    places_list=places_base.GetUserPlaces(time_start, time_end)
+    places_base.doMapping(time_start, time_end)
+    places_list=places_base.GetUserPlaces(time_start, time_end,predictor)
     context = {'placesMap': places_list}
     return render(request, 'polls/placesPrint.html', context)
 
 def trainPredictor(request,user_id,time_start,time_end):
     
-    predictor=neuralPredictingPlaces.predictingFramework(user_id)
-    predictor.train(time_start, time_end)
+    places_mapping=places.placesMap(user_id)
+    places_mapping.doMapping(time_start, time_end)
+    
+    predictor.train(user_id,time_start, time_end)
+    places_base=places.placesMap(user_id)
+    places_list=places_base.GetUserPlaces(time_start, time_end,predictor)
+    context = {'placesMap': places_list}
+    return render(request, 'polls/placesPrint.html', context)
 
 def drawAware(request,user_id,time_start,time_end,static=False):
     if static:
@@ -52,7 +71,8 @@ def drawAware(request,user_id,time_start,time_end,static=False):
 
 def drawCentersAware(request,user_id,time_start,time_end):
     clusterData(user_id,time_start,time_end)
-    placesToUser(user_id,time_start,time_end)
+    #placesToUser(user_id,time_start,time_end)
+    placesToUser(user_id,None,None)
     latest_poll_list = Clusters.objects.filter(device_id=user_id)
     context = {'locations': latest_poll_list}
     #print latest_poll_list

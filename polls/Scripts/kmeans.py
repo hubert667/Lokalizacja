@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 """
-Part of the code cames from the Data Science Blog
+Part of the code is from the Data Science Blog
 http://datasciencelab.wordpress.com/2014/01/21/selection-of-k-in-k-means-clustering-reloaded/
 """
 def FindKAndClusterKMeans(dataToCluster):
