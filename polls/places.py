@@ -118,15 +118,17 @@ class placesMap:
         #locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
         places_local=[]
         time_change = timedelta(hours=2)
+        previously_predicted=""
         for locationEvent in places:
             new_timestamp=locationEvent.timestamp
             place=locationEvent.place
-            if  place!=None:
+            if place!=None:
                 if predictor!=None:
                     predictedLocation=predictor.predictLocation(self.user_id,place,new_timestamp)
                 new_time= datetime.datetime.fromtimestamp(new_timestamp / 1e3)+time_change
-                if place.name!=predictedLocation:
-                    places_local.append([new_time,place,predictedLocation])
+                #if place.name!=previously_predicted:
+                places_local.append([new_time,place,previously_predicted])
+                previously_predicted=predictedLocation
         return places_local
         
         
