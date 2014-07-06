@@ -1,0 +1,13 @@
+<html>
+  <head>
+   
+  </head>
+  <body>
+	
+    {% for tup in placesMap %}
+	<p>{{forloop.counter0}}{% for it in tup %}{{ it }} {% endfor %}</p>
+    {% endfor %}
+	
+  </body>
+</html>
+

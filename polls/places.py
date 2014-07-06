@@ -126,8 +126,10 @@ class placesMap:
                 if predictor!=None:
                     predictedLocation=predictor.predictLocation(self.user_id,place,new_timestamp)
                 new_time= datetime.datetime.fromtimestamp(new_timestamp / 1e3)+time_change
-                #if place.name!=previously_predicted:
-                places_local.append([new_time,place,previously_predicted])
+                if place.name!=previously_predicted:
+                    places_local.append([new_time,place,previously_predicted,"       BAD"])
+                else:
+                    places_local.append([new_time,place,previously_predicted,"       GOOD"])
                 previously_predicted=predictedLocation
         return places_local
         
