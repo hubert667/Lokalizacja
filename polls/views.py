@@ -10,12 +10,13 @@ import datetime
 from datetime import timedelta
 import operator
 import neuralPredictingPlaces
+import hmmPredictingPlaces
 
 def index(request):
     return HttpResponse("Hello, world. You're at the poll index.")
 
-predictor=neuralPredictingPlaces.predictingFramework()
-
+#predictor=neuralPredictingPlaces.predictingFramework()
+predictor=hmmPredictingPlaces.hmmFramework()
 
 def printActivities(request,user_id,time_start,time_end):
     activity_list = PluginGoogleActivityRecognition.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
