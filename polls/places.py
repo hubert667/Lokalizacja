@@ -51,12 +51,12 @@ class placesMap:
             if closest_place is not None:
                 places_counts[closest_place][time]+=1
         for time in self.present_sample:
-            max=0
+            max_val=0
             chosen_place=None
             for place in places:
                 res=places_counts[place][time]
-                if res>max:
-                    max=res
+                if res>max_val:
+                    max_val=res
                     chosen_place=place
             self.places_map[time]=chosen_place  
                     
@@ -119,6 +119,9 @@ class placesMap:
         places_local=[]
         time_change = timedelta(hours=2)
         previously_predicted=""
+        previous_place=""
+        total_number=0.0
+        correct_predict=0.0
         for locationEvent in places:
             new_timestamp=locationEvent.timestamp
             place=locationEvent.place
@@ -126,12 +129,17 @@ class placesMap:
                 if predictor!=None:
                     predictedLocation=predictor.predictLocation(self.user_id,place,new_timestamp)
                 new_time= datetime.datetime.fromtimestamp(new_timestamp / 1e3)+time_change
-                if place.name!=previously_predicted:
-                    places_local.append([new_time,place,previously_predicted,"       BAD"])
-                else:
-                    places_local.append([new_time,place,previously_predicted,"       GOOD"])
+                if place.name!=previous_place and previous_place!="":
+                    if place.name!=previously_predicted:
+                        places_local.append([new_time,place,previously_predicted,"       BAD"])
+                        total_number+=1.0
+                    else:
+                        places_local.append([new_time,place,previously_predicted,"       GOOD"])
+                        correct_predict+=1.0
+                        total_number+=1.0
                 previously_predicted=predictedLocation
-        return places_local
+                previous_place=place.name
+        return [places_local,correct_predict/total_number]
         
         
         

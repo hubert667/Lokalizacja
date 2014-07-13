@@ -24,6 +24,7 @@ class hmmModel():
     places_indexes={}
     global_place_index=0
     last_visit_map={}
+    transition_matrix=[]
     
     def __init__(self, places,num_of_plac):
         self.num_of_places=num_of_plac
@@ -37,7 +38,9 @@ class hmmModel():
     def predict(self,place,timestamp):
         
         new_place=self.__prepare_place(place)
-        index=np.argmin(self.markovModel._get_transmat()[new_place,:])
+        
+        index=np.argmax(self.transition_matrix[new_place,:])
+        
         result=None
         for key in self.places_indexes:
             if self.places_indexes[key]==index:
@@ -47,9 +50,6 @@ class hmmModel():
     def __prepareTrainingData(self,places,num_of_places):
         
         allplaces = []
-        previous_feature_vector=None
-        previous_place=None
-        counter=0
         for location_event in places:
             if location_event.place!=None:
                 new_place=self.__prepare_place(location_event.place)
@@ -88,18 +88,7 @@ class hmmModel():
 #                 self.last_visit_map[location_event.place]=current_timestamp
         return allplaces
         
-    def __prepare_features(self,place,timestamp):
-        
-        time_event=datetime.datetime.fromtimestamp(timestamp / 1e3)+self.time_change
-        weekday=float(time_event.weekday())/7.0
-        hour=float(time_event.hour)/24.0
-        last_delta=0
-        if place in self.last_visit_map:
-            last_time=datetime.datetime.fromtimestamp(self.last_visit_map[place] / 1e3)+self.time_change
-            last_delta=float(min(168,(time_event-last_time).seconds/3600))/168.0 # number of hours during one week
-        place_num=float(self.__prepare_place(place))/float(self.num_of_places-1)
-        
-        return [place_num,hour,weekday,last_delta]
+
         
     def __prepare_place(self,place):
         
@@ -120,16 +109,35 @@ class hmmModel():
 #             for klass in range(3):
 #                 input = multivariate_normal(means[klass],cov[klass])
 #                 alldata.addSample(input, [klass])
-                
-       
+         
+           
+    def __prepareTransitions(self):
+        """
+        Removes probabilities of the transition to the same state
+        """
+        self.transition_matrix=self.markovModel._get_transmat()[:];
+        for i in range(len(self.transition_matrix)):
+            index=np.argmax(self.transition_matrix[i,:])
+            if index==i:
+                self.transition_matrix[i,index]=0
 
+        
     
     def __trainHMM(self,train_data):
-        self.markovModel =hmm.MultinomialHMM(self.num_of_places)
+        
+        emissionMatrix=np.identity(3)
+        print self.num_of_places
+        self.markovModel =hmm.MultinomialHMM(self.num_of_places,params="stmc",init_params="stmc")
+        self.markovModel._set_emissionprob(emissionMatrix)
+        
         self.markovModel.fit([train_data])
         self.markovModel.predict(train_data)
+        self.__prepareTransitions()
         print self.markovModel.score(train_data)
         print self.markovModel.transmat_
+        print self.places_indexes
+        print self.markovModel.sample(100)
+        print self.markovModel._get_emissionprob()
         
         
         

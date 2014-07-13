@@ -45,7 +45,8 @@ def printLocations(request,user_id,time_start,time_end):
       
     places_base=places.placesMap(user_id)
     places_base.doMapping(time_start, time_end)
-    places_list=places_base.GetUserPlaces(time_start, time_end,predictor)
+    [places_list,success_rate]=places_base.GetUserPlaces(time_start, time_end,predictor)
+    print "predicted correctly in "+str(100*success_rate)+"% cases"
     context = {'placesMap': places_list}
     return render(request, 'polls/placesPrint.html', context)
 
@@ -56,7 +57,8 @@ def trainPredictor(request,user_id,time_start,time_end):
     
     predictor.train(user_id,time_start, time_end)
     places_base=places.placesMap(user_id)
-    places_list=places_base.GetUserPlaces(time_start, time_end,predictor)
+    [places_list,success_rate]=places_base.GetUserPlaces(time_start, time_end,predictor)
+    print "predicted correctly in "+str(100*success_rate)+"% cases"
     context = {'placesMap': places_list}
     return render(request, 'polls/placesPrint.html', context)
 
