@@ -4,6 +4,7 @@ import time
 import datetime
 from datetime import timedelta
 import operator
+import places
 
 #only for data from SDCF
 def ClusterData(user_id):
@@ -39,6 +40,10 @@ def SmartClusterData(user_id,time_start,time_end):
         location_data.append([float(loc.double_latitude),float(loc.double_longitude)])
     
     __doClusters(user_id, location_data)
+    places_mapping=places.placesMap(user_id)
+    places_mapping.doMapping(None, None)
+    __removeVisitedOnce(user_id)
+    
     
 def GetStaticLocations(user_id, time_start, time_end):
     locations_list = Locations.objects.filter(device_id=user_id, timestamp__gte=time_start, timestamp__lte=time_end)
@@ -60,6 +65,26 @@ def __doClusters(user_id, location_data):
         p = Clusters(double_latitude=str(cluster[0]), double_longitude=str(cluster[1]), device_id=user_id, ts=current_time,name=str(name))
         name+=1
         p.save()
+        
+def  __removeVisitedOnce(user_id):
+    
+    places=Places.objects.filter(device_id=user_id).order_by('timestamp')
+    new_places=[]
+    visited_once=[]  
+    previous_place=None 
+    for locationEvent in places:
+        place=locationEvent.place
+        if place!=None:
+            if previous_place!=place.name: #trip
+                if place in visited_once and place not in new_places:
+                    new_places.append(place)
+                elif place not in visited_once:
+                    visited_once.append(place)
+            previous_place=place.name
+    for place in places:
+        if place not in previous_place:
+            place.delete()
+
         
 
     
