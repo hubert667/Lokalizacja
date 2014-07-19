@@ -16,7 +16,7 @@ class placesMap:
     places_map={}
     present_sample=collections.Counter()
     max_distance=100
-    period=60
+    period=15
     
     def __init__(self,user_id):
         """

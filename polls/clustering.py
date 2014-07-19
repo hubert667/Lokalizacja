@@ -5,6 +5,7 @@ import datetime
 from datetime import timedelta
 import operator
 import places
+import constans
 
 #only for data from SDCF
 def ClusterData(user_id):
@@ -40,16 +41,16 @@ def SmartClusterData(user_id,time_start,time_end):
         location_data.append([float(loc.double_latitude),float(loc.double_longitude)])
     
     __doClusters(user_id, location_data)
+    __mergeCloseOnes(user_id)
     places_mapping=places.placesMap(user_id)
     places_mapping.doMapping(time_start, time_end)
     __removeVisitedOnce(user_id)
-    __mergeCloseOnes(user_id)
     places_mapping=places.placesMap(user_id)
     #places_mapping.doMapping(None, None)
     places_mapping.doMapping(time_start, time_end)
     
 def GetStaticLocations(user_id, time_start, time_end):
-    locations_list = Locations.objects.filter(device_id=user_id, timestamp__gte=time_start, timestamp__lte=time_end)
+    locations_list = Locations.objects.filter(device_id=user_id, timestamp__gte=time_start, timestamp__lte=time_end,accuracy__lte=constans.min_accuracy)
     static_location_list=[]
     for location in locations_list:
         local_a=location.timestamp-timedelta(minutes=5).total_seconds()*1e+3
@@ -105,13 +106,13 @@ def  __mergeCloseOnes(user_id):
 
         
 def __merge_Once(clusters,places_mapping):
-    distance_threshold=250
+    
     
     for cluster1 in clusters:
         for cluster2 in clusters:
             if cluster1!=cluster2:
                 distance=places_mapping.calc_distance(cluster1.double_latitude, cluster1.double_longitude, cluster2.double_latitude, cluster2.double_longitude)
-                if distance<distance_threshold:
+                if distance<=constans.distance_threshold_merge:
                     new_cluster= Clusters(double_latitude=str(__average(cluster1.double_latitude,cluster2.double_latitude)), double_longitude=str(__average(cluster1.double_longitude,cluster2.double_longitude)), device_id=cluster1.device_id, ts=cluster1.ts,name=str(cluster1.name))
                     print "merged "+str(new_cluster)
                     cluster1.delete()

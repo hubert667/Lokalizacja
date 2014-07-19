@@ -13,7 +13,7 @@ def FindKAndClusterKMeans(dataToCluster):
     results=[]
     fs, Sk = findK(1,dataToCluster)# 1 offset. 0 index means 1 cluster
     results.append(fs)
-    for i in range(2,19):
+    for i in range(2,25):
         fs, Sk = findK(i,dataToCluster,Sk)
         results.append(fs)
     
