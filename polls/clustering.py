@@ -19,7 +19,7 @@ def ClusterData(user_id):
 
 def ClusterDataAware(user_id,time_start,time_end):
     """
-    Clusters data after it find optimal K
+    Clusters data after it finds optimal K
     """
     
     locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
@@ -41,9 +41,12 @@ def SmartClusterData(user_id,time_start,time_end):
     
     __doClusters(user_id, location_data)
     places_mapping=places.placesMap(user_id)
-    places_mapping.doMapping(None, None)
+    places_mapping.doMapping(time_start, time_end)
     __removeVisitedOnce(user_id)
-    
+    __mergeCloseOnes(user_id)
+    places_mapping=places.placesMap(user_id)
+    #places_mapping.doMapping(None, None)
+    places_mapping.doMapping(time_start, time_end)
     
 def GetStaticLocations(user_id, time_start, time_end):
     locations_list = Locations.objects.filter(device_id=user_id, timestamp__gte=time_start, timestamp__lte=time_end)
@@ -78,14 +81,43 @@ def  __removeVisitedOnce(user_id):
             if previous_place!=place.name: #trip
                 if place in visited_once and place not in new_places:
                     new_places.append(place)
+                    print "append2  "+place.name
                 elif place not in visited_once:
                     visited_once.append(place)
+                    print "append1  "+place.name
             previous_place=place.name
-    for place in places:
-        if place not in previous_place:
-            place.delete()
+    clusters=Clusters.objects.filter(device_id=user_id)
+    for cluster in clusters:
+        if cluster not in new_places:
+            print "removed"+ cluster.name
+            cluster.delete()
+
+def __average(num1,num2):
+    return (float(num1)+float(num2))/2.0
+
+def  __mergeCloseOnes(user_id):
+    
+    places_mapping=places.placesMap(user_id)
+    clusters=Clusters.objects.filter(device_id=user_id)
+    while(__merge_Once(clusters,places_mapping)):
+        clusters=Clusters.objects.filter(device_id=user_id)
+    return
 
         
-
+def __merge_Once(clusters,places_mapping):
+    distance_threshold=250
+    
+    for cluster1 in clusters:
+        for cluster2 in clusters:
+            if cluster1!=cluster2:
+                distance=places_mapping.calc_distance(cluster1.double_latitude, cluster1.double_longitude, cluster2.double_latitude, cluster2.double_longitude)
+                if distance<distance_threshold:
+                    new_cluster= Clusters(double_latitude=str(__average(cluster1.double_latitude,cluster2.double_latitude)), double_longitude=str(__average(cluster1.double_longitude,cluster2.double_longitude)), device_id=cluster1.device_id, ts=cluster1.ts,name=str(cluster1.name))
+                    print "merged "+str(new_cluster)
+                    cluster1.delete()
+                    cluster2.delete()
+                    new_cluster.save()
+                    return True
+    return False
     
     

@@ -6,6 +6,7 @@ import collections
 from datetime import timedelta
 from math import cos, sin, asin, sqrt, radians
 import operator
+import constans
 
 #only for data from SDCF
 class placesMap:
@@ -14,7 +15,7 @@ class placesMap:
     time_period=0;
     places_map={}
     present_sample=collections.Counter()
-    max_distance=50
+    max_distance=100
     period=60
     
     def __init__(self,user_id):
@@ -70,7 +71,7 @@ class placesMap:
         closest=None
         min=1e+10
         for place in places:
-            distance=self.__calc_distance(location.double_latitude,location.double_longitude, place.double_latitude,place.double_longitude)
+            distance=self.calc_distance(location.double_latitude,location.double_longitude, place.double_latitude,place.double_longitude)
             if distance<min:
                 min=distance
                 if distance<self.max_distance:
@@ -80,7 +81,7 @@ class placesMap:
         
         
 
-    def __calc_distance(self,lat1, lon1, lat2, lon2):
+    def calc_distance(self,lat1, lon1, lat2, lon2):
         """
         Calculate the great circle distance between two points
         on the earth (specified in decimal degrees). Returns in meters
@@ -117,7 +118,7 @@ class placesMap:
         predictedLocation=None
         #locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
         places_local=[]
-        time_change = timedelta(hours=2)
+        time_change = constans.time_change
         previously_predicted=""
         previous_place=""
         total_number=0.0
@@ -129,7 +130,7 @@ class placesMap:
                 if predictor!=None:
                     predictedLocation=predictor.predictLocation(self.user_id,place,new_timestamp)
                 new_time= datetime.datetime.fromtimestamp(new_timestamp / 1e3)+time_change
-                if place.name!=previous_place and previous_place!="":
+                if (place.name!=previous_place and previous_place!="" ) or False:
                     if place.name!=previously_predicted:
                         places_local.append([new_time,place,previously_predicted,"       BAD"])
                         total_number+=1.0

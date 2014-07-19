@@ -29,7 +29,7 @@ class hmmModel():
     def __init__(self, places,num_of_plac):
         self.num_of_places=num_of_plac
         self.training_data=self.__prepareTrainingData(places,num_of_plac)
-
+        print self.training_data
         
     def train(self):
         
@@ -125,7 +125,7 @@ class hmmModel():
     
     def __trainHMM(self,train_data):
         
-        emissionMatrix=np.identity(3)
+        emissionMatrix=np.identity(self.num_of_places)
         print self.num_of_places
         self.markovModel =hmm.MultinomialHMM(self.num_of_places,params="stmc",init_params="stmc")
         self.markovModel._set_emissionprob(emissionMatrix)
