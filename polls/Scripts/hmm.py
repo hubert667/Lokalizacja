@@ -25,11 +25,12 @@ class hmmModel():
     global_place_index=0
     last_visit_map={}
     transition_matrix=[]
+    day_parts=3
     
     def __init__(self, places,num_of_plac):
         self.num_of_places=num_of_plac
         self.training_data=self.__prepareTrainingData(places,num_of_plac)
-        print self.training_data
+        #print self.training_data
         
     def train(self):
         
@@ -90,15 +91,15 @@ class hmmModel():
         
 
         
-    def __prepare_place(self,place):
+    def __prepare_place(self,tuple_data):
         
-        if place!=None:
-            if place.name in self.places_indexes:
-                return self.places_indexes[place.name]
+        if tuple_data!=None:
+            if tuple_data.name in self.places_indexes:
+                return self.places_indexes[tuple_data.name]
             
-            self.places_indexes[place.name]=self.global_place_index
+            self.places_indexes[tuple_data.name]=self.global_place_index
             self.global_place_index+=1
-            return self.places_indexes[place.name]
+            return self.places_indexes[tuple_data.name]
         else:
             return None
             
@@ -115,12 +116,11 @@ class hmmModel():
         """
         Removes probabilities of the transition to the same state
         """
-        self.transition_matrix=self.markovModel._get_transmat()[:];
+        self.transition_matrix=self.markovModel._get_transmat()[:]
         for i in range(len(self.transition_matrix)):
             index=np.argmax(self.transition_matrix[i,:])
             if index==i:
                 self.transition_matrix[i,index]=0
-
         
     
     def __trainHMM(self,train_data):
@@ -135,9 +135,11 @@ class hmmModel():
         self.__prepareTransitions()
         print self.markovModel.score(train_data)
         print self.markovModel.transmat_
-        print self.places_indexes
-        print self.markovModel.sample(100)
-        print self.markovModel._get_emissionprob()
+        #print self.places_indexes
+        #print self.markovModel.sample(100)
+        #print self.markovModel._get_emissionprob()
+        
+
         
         
         

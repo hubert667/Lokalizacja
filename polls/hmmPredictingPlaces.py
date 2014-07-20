@@ -1,5 +1,8 @@
 from Scripts import hmm
 from polls.models import Places,Clusters
+from polls.Scripts.hmm import hmmModel
+from polls.Scripts.hmmMultiFeatures import hmmMultiFeaturesModel
+
 
 class hmmFramework():
     
@@ -21,8 +24,8 @@ class hmmFramework():
             places=Places.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end).order_by('timestamp')      
             clusters=Clusters.objects.filter(device_id=user_id)
             num_of_places=len(clusters)
-            print len(clusters)
-            self.preditcors[user_id]=hmm.hmmModel(places,num_of_places);
+            #self.preditcors[user_id]=hmmModel(places,num_of_places);
+            self.preditcors[user_id]=hmmMultiFeaturesModel(places,num_of_places);
             self.preditcors[user_id].train()
         finally:
             self.currently_in_progress[user_id]=False

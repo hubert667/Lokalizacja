@@ -136,15 +136,15 @@ class neuralNetwork():
 #             weekday=1.0
         return [hour,weekday]
         
-    def __prepare_place(self,place):
+    def __prepare_place(self,tuple_data):
         
-        if place!=None:
-            if place.name in self.places_indexes:
-                return self.places_indexes[place.name]
+        if tuple_data!=None:
+            if tuple_data.name in self.places_indexes:
+                return self.places_indexes[tuple_data.name]
             
-            self.places_indexes[place.name]=self.global_place_index
+            self.places_indexes[tuple_data.name]=self.global_place_index
             self.global_place_index+=1
-            return self.places_indexes[place.name]
+            return self.places_indexes[tuple_data.name]
         else:
             return None
             

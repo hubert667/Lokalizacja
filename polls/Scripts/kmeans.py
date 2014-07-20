@@ -75,7 +75,7 @@ def choose_clusters(results,X):
             min_val=results[i]
         if results[i]<results[i-1] and results[i]<results[i+1] and ( max_val==min_val or (max_val-results[i])/(max_val-min_val)>local_min_threshold):
             result_K=i
-    print result_K+1
+    print "Number of clusters: "+ str(result_K+1)
     return result_K+1
 
 def find_groups(k_means,dataToCluster,local_K):

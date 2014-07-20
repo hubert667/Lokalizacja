@@ -118,7 +118,7 @@ class placesMap:
         predictedLocation=None
         #locations_list = Locations.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
         places_local=[]
-        time_change = constans.time_change
+
         previously_predicted=""
         previous_place=""
         total_number=0.0
@@ -129,7 +129,7 @@ class placesMap:
             if place!=None:
                 if predictor!=None:
                     predictedLocation=predictor.predictLocation(self.user_id,place,new_timestamp)
-                new_time= datetime.datetime.fromtimestamp(new_timestamp / 1e3)+time_change
+                new_time= datetime.datetime.fromtimestamp(new_timestamp / 1e3)+constans.time_change
                 if (place.name!=previous_place and previous_place!="" ) or False:
                     if place.name!=previously_predicted:
                         places_local.append([new_time,place,previously_predicted,"       BAD"])
