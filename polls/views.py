@@ -42,7 +42,7 @@ def printLocations(request,user_id,time_start,time_end):
 
 def trainPredictor(request,user_id,time_start,time_end):
     
-    #placesToUser(user_id,time_start,time_end)
+    placesToUser(user_id,None,None)
     
     predictor.train(user_id,time_start, time_end)
     places_base=places.placesMap(user_id)

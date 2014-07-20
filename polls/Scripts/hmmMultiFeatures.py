@@ -57,22 +57,26 @@ class hmmMultiFeaturesModel(hmmModel):
         
     def __prepare_place(self,place,current_timestamp,generate_new=True):
         
+        if place==None:
+            return None
         new_place=place.name
         new_time= datetime.datetime.fromtimestamp(current_timestamp / 1e3)+polls.constans.time_change
         current_day_part=int((max(0,(new_time.hour-6))*self.day_parts)/18)
         tuple_data=(new_place,current_day_part)
         
-        if tuple_data!=None:
-            if tuple_data in self.places_indexes:
-                return self.places_indexes[tuple_data]
-            if generate_new==False:
-                return None
+        if tuple_data in self.places_indexes:
+            return self.places_indexes[tuple_data]
+        if generate_new==False:
+            for day_part_artificial in range(self.day_parts):
+                tuple_data=(new_place,day_part_artificial)
+                if tuple_data in self.places_indexes:
+                    return self.places_indexes[tuple_data]
+            return None
+        else:
             self.places_indexes[tuple_data]=self.global_place_index
             print self.global_place_index
             self.global_place_index+=1
             return self.places_indexes[tuple_data]
-        else:
-            return None
         
     def __get_place(self,index):
         

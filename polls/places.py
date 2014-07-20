@@ -130,7 +130,7 @@ class placesMap:
                 if predictor!=None:
                     predictedLocation=predictor.predictLocation(self.user_id,place,new_timestamp)
                 new_time= datetime.datetime.fromtimestamp(new_timestamp / 1e3)+constans.time_change
-                if (place.name!=previous_place and previous_place!="" ) or False:
+                if (place.name!=previous_place and previous_place!="" ) or True:
                     if place.name!=previously_predicted:
                         places_local.append([new_time,place,previously_predicted,"       BAD"])
                         total_number+=1.0

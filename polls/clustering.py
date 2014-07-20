@@ -92,6 +92,7 @@ def  __removeVisitedOnce(user_id):
         if cluster not in new_places:
             print "removed"+ cluster.name
             cluster.delete()
+    print len(new_places)
 
 def __average(num1,num2):
     return (float(num1)+float(num2))/2.0
