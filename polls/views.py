@@ -13,7 +13,7 @@ import neuralPredictingPlaces
 import hmmPredictingPlaces
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the poll index.")
+    return HttpResponse("Wrong address")
 
 #predictor=neuralPredictingPlaces.predictingFramework()
 predictor=hmmPredictingPlaces.hmmFramework()
