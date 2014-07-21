@@ -9,14 +9,12 @@ import calendar
 import datetime
 from datetime import timedelta
 import operator
-import neuralPredictingPlaces
-import hmmPredictingPlaces
+import PredictingPlaces
 
 def index(request):
     return HttpResponse("Wrong address")
 
-#predictor=neuralPredictingPlaces.predictingFramework()
-predictor=hmmPredictingPlaces.hmmFramework()
+predictor=PredictingPlaces.PredictingFramework()
 
 def printActivities(request,user_id,time_start,time_end):
     activity_list = PluginGoogleActivityRecognition.objects.filter(device_id=user_id,timestamp__gte=time_start,timestamp__lte=time_end)
@@ -32,9 +30,9 @@ def printActivities(request,user_id,time_start,time_end):
 
 def printLocations(request,user_id,time_start,time_end):
     
-    #placesToUser(user_id,time_start,time_end)
+    placesToUser(user_id,time_start,time_end)
+    
     places_base=places.placesMap(user_id)
-
     [places_list,success_rate]=places_base.GetUserPlaces(time_start, time_end,predictor)
     print "predicted correctly in "+str(100*success_rate)+"% cases"
     context = {'placesMap': places_list}
@@ -42,7 +40,8 @@ def printLocations(request,user_id,time_start,time_end):
 
 def trainPredictor(request,user_id,time_start,time_end):
     
-    placesToUser(user_id,None,None)
+    placesToUser(user_id,time_start,time_end)
+    #placesToUser(user_id,None,None)
     
     predictor.train(user_id,time_start, time_end)
     places_base=places.placesMap(user_id)
@@ -64,8 +63,6 @@ def drawAware(request,user_id,time_start,time_end,static=False):
 
 def drawCentersAware(request,user_id,time_start,time_end):
     clusterData(user_id,time_start,time_end)
-    #placesToUser(user_id,time_start,time_end)
-    #placesToUser(user_id,None,None)
     latest_poll_list = Clusters.objects.filter(device_id=user_id)
     context = {'locations': latest_poll_list}
     #print latest_poll_list
@@ -83,7 +80,9 @@ def placesToUser(user_id,time_start,time_end):
     
 def detailsForm(request):
    
-    #generateUsers()   
+    userList=Users.objects.all()
+    if(len(userList)==0):
+        generateUsers()   
     userList=Users.objects.all()
     if request.method == 'POST': # If the form has been submitted...
         # ContactForm was defined in the the previous section
