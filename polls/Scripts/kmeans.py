@@ -64,7 +64,6 @@ def choose_clusters(results,X):
     ax2.set_ylabel('value of f(K)', fontsize=15) 
     plt.savefig('detK_N%s.png' % (str(len(X))+str(datetime.datetime.now()+polls.constans.time_change)),bbox_inches='tight', dpi=100)
     
-    #result_K= np.where(results == min_val(results))[0][0] + 1
     result_K=None
     min_val=1000
     max_val=-1000

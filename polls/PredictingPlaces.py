@@ -7,7 +7,7 @@ from Scripts import neuralNetwork
 
 class PredictingFramework():
     
-    preditcors={}
+    predictors={}
     currently_in_progress={}
     error="Previous training not ended"
     errorStat="Training not ended or wrong user id"
@@ -17,7 +17,7 @@ class PredictingFramework():
         
         
     def train(self,user_id,time_start,time_end):
-        if (user_id in self.preditcors) and self.currently_in_progress[user_id]==True:
+        if (user_id in self.predictors) and self.currently_in_progress[user_id]==True:
             return self.error
         
         self.currently_in_progress[user_id]=True
@@ -26,11 +26,12 @@ class PredictingFramework():
             clusters=Clusters.objects.filter(device_id=user_id)
             num_of_places=len(clusters)
             
-            #self.preditcors[user_id]=hmmModel(places,num_of_places);
-            self.preditcors[user_id]=hmmMultiFeaturesModel(places,num_of_places);
-            #self.preditcors[user_id]=neuralNetwork.neuralNetwork(places,num_of_places);
+            #uncomment one of the predictor model
+            #self.predictors[user_id]=hmmModel(places,num_of_places)
+            self.predictors[user_id]=hmmMultiFeaturesModel(places,num_of_places)
+            #self.predictors[user_id]=neuralNetwork.neuralNetwork(places,num_of_places)
 
-            self.preditcors[user_id].train()
+            self.predictors[user_id].train()
         finally:
             self.currently_in_progress[user_id]=False
             
@@ -38,10 +39,10 @@ class PredictingFramework():
             
     def predictLocation(self,user_id,place,timestamp):
 
-        if (user_id in self.preditcors)==False or  (user_id in self.currently_in_progress and self.currently_in_progress[user_id]==True):
+        if (user_id in self.predictors)==False or  (user_id in self.currently_in_progress and self.currently_in_progress[user_id]==True):
             return self.errorStat
          
-        next_location=self.preditcors[user_id].predict(place,timestamp)
+        next_location=self.predictors[user_id].predict(place,timestamp)
          
         return next_location
         

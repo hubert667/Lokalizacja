@@ -56,25 +56,7 @@ class neuralNetwork():
         previous_feature_vector=None
         previous_place=None
         counter=0
-        
-        
-#         means = [(0,0),(1,1),(3,1)]
-#         cov = [diag([0.02,0.02]), diag([0.02,0.02]), diag([1.5,0.7])]
-#         #alldata = ClassificationDataSet(2, 1, nb_classes=3)
-#         for n in xrange(200):
-#             for klass in range(2):
-#                 if klass==1:
-#                     input = multivariate_normal(means[klass],cov[klass])
-#                     #alldata.addSample(input, [klass])
-#                     #alldata.addSample(input, [klass])
-#                 
-#                 input = multivariate_normal(means[klass],cov[klass])
-#                 print input
-#                 print klass
-#                 #alldata.addSample(input, [klass])
-                
-                
-                
+               
         for location_event in places:
             if location_event.place!=None:
                 current_timestamp=location_event.timestamp
@@ -128,12 +110,6 @@ class neuralNetwork():
             last_delta=float(min(168,(time_event-last_time).seconds/3600))/168.0 # number of hours during one week
         place_num=float(self.__prepare_place(place))/float(self.num_of_places-1)
         
-#         if place.name=="1":
-#             hour=0.0
-#             weekday=0.0
-#         else:
-#             hour=1.0
-#             weekday=1.0
         return [hour,weekday]
         
     def __prepare_place(self,tuple_data):
@@ -148,16 +124,6 @@ class neuralNetwork():
         else:
             return None
             
-#         means = [(-10,-10),(2,4),(30,10)]
-#         cov = [diag([1,1]), diag([0.5,1.2]), diag([1.5,0.7])]
-#         alldata = ClassificationDataSet(2, 1, nb_classes=3)
-#         for n in xrange(400):
-#             for klass in range(3):
-#                 input = multivariate_normal(means[klass],cov[klass])
-#                 alldata.addSample(input, [klass])
-                
-       
-
     
     def __trainNetwork(self,trndata,tstdata):
         

@@ -19,9 +19,5 @@ class InfoDetailsForm(forms.Form):
         super(InfoDetailsForm, self).__init__(*args, **kwargs)
         self.fields['start_time'].widget = SelectDateWidget()
         self.fields['end_time'].widget = SelectDateWidget()
-        """
-        queryset = kwargs.pop('queryset', None)
-        if queryset:
-        self.fields['ChooseUser'].queryset = queryset
-       """
+
             

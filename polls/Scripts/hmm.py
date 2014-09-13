@@ -55,38 +55,6 @@ class hmmModel():
             if location_event.place!=None:
                 new_place=self.__prepare_place(location_event.place)
                 allplaces.append(new_place)
-#                 current_timestamp=location_event.timestamp
-#                 new_feature_vector=self.__prepare_features(location_event.place,current_timestamp)
-#                 new_place=self.__prepare_place(location_event.place)
-#                 if previous_feature_vector!=None and previous_place!=None and location_event.place.name!=previous_place.name:
-#                     counter+=1
-#                     print previous_feature_vector
-#                     print location_event.place.name
-#                     for i in range(1):
-#                         allplaces.append(new_place)
-#                 previous_feature_vector=new_feature_vector
-#                 previous_place=location_event.place
-#                 self.last_visit_map[location_event.place]=current_timestamp
-                
-#         previous_feature_vector=None
-#         previous_place=None
-#         probiability_of_static=float(counter)/float(len(places))
-#         probiability_of_static=1
-#         for location_event in places:
-#             if location_event.place!=None:
-#                 current_timestamp=location_event.timestamp
-#                 new_feature_vector=self.__prepare_features(location_event.place,current_timestamp)
-#                 new_place=self.__prepare_place(location_event.place)
-#                 rand=random.random()
-#                 if previous_feature_vector!=None and rand<=probiability_of_static:
-#                     counter+=1
-#                     print new_feature_vector
-#                     print location_event.place.name
-#                     for i in range(1):
-#                         allplaces.append(new_place)
-#                 previous_feature_vector=new_feature_vector
-#                 previous_place=new_place
-#                 self.last_visit_map[location_event.place]=current_timestamp
         return allplaces
         
 
@@ -103,13 +71,6 @@ class hmmModel():
         else:
             return None
             
-#         means = [(-10,-10),(2,4),(30,10)]
-#         cov = [diag([1,1]), diag([0.5,1.2]), diag([1.5,0.7])]
-#         alldata = ClassificationDataSet(2, 1, nb_classes=3)
-#         for n in xrange(400):
-#             for klass in range(3):
-#                 input = multivariate_normal(means[klass],cov[klass])
-#                 alldata.addSample(input, [klass])
          
            
     def __prepareTransitions(self):

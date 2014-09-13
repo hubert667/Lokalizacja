@@ -69,11 +69,11 @@ class placesMap:
         """
         
         closest=None
-        min=1e+10
+        minC=1e+10
         for place in places:
             distance=self.calc_distance(location.double_latitude,location.double_longitude, place.double_latitude,place.double_longitude)
-            if distance<min:
-                min=distance
+            if distance<minC:
+                minC=distance
                 if distance<self.max_distance:
                     closest=place
         return closest
@@ -86,7 +86,7 @@ class placesMap:
         Calculate the great circle distance between two points
         on the earth (specified in decimal degrees). Returns in meters
         
-        This method is copied from http://gis.stackexchange.com/
+        This method came from http://gis.stackexchange.com/
         """
         # convert decimal degrees to radians
         lon1, lat1, lon2, lat2 = map(radians, [float(lon1), float(lat1), float(lon2), float(lat2)])

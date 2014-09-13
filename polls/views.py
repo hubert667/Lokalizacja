@@ -84,13 +84,10 @@ def detailsForm(request):
     if(len(userList)==0):
         generateUsers()   
     userList=Users.objects.all()
-    if request.method == 'POST': # If the form has been submitted...
-        # ContactForm was defined in the the previous section
-        form = InfoDetailsForm(request.POST) # A form bound to the POST data
+    if request.method == 'POST':
+        form = InfoDetailsForm(request.POST) 
         form.fields['ChooseUser'].queryset=userList
-        if form.is_valid(): # All validation rules pass
-            # Process the data in form.cleaned_data
-            # ...
+        if form.is_valid(): 
             selected_choice = form.cleaned_data['ChooseUser']
             user_id=selected_choice.device_id
             choose=form.cleaned_data['ChooseTask']
